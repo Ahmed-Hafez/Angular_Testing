@@ -1,3 +1,5 @@
+import { By } from '@angular/platform-browser';
+import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { Post } from 'src/app/models/post.model';
@@ -38,9 +40,17 @@ describe('Posts Component', () => {
   let component: PostsComponent;
   let postService: any;
 
+  @Component({
+    selector: 'app-post',
+    template: '<div></div>',
+  })
+  class FakePostComponent {
+    @Input() post!: Post;
+  }
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PostsComponent],
+      declarations: [PostsComponent, FakePostComponent],
       providers: [
         {
           provide: PostService,
@@ -55,10 +65,24 @@ describe('Posts Component', () => {
   });
 
   describe('get', () => {
+    it('should initialize posts array directly with posts', () => {
+      fixture.detectChanges();
+      expect(component.posts.length).toBeGreaterThan(0);
+    });
+
     it('should get posts when getPosts method is called', () => {
       expect(component.posts.length).toEqual(0);
       component.getPosts();
       expect(component.posts.length).toBeGreaterThan(0);
+    });
+
+    it('should render app-post for each post', () => {
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      let noOfCreatedElements = debugElement.queryAll(
+        By.css('app-post')
+      ).length;
+      expect(noOfCreatedElements).toEqual(POSTS.length);
     });
   });
 
