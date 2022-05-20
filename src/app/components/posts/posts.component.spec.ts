@@ -6,6 +6,7 @@ import { Post } from 'src/app/models/post.model';
 import { PostService } from 'src/app/services/post.service';
 
 import { PostsComponent } from './posts.component';
+import { PostComponent } from '../post/post.component';
 
 const POSTS = [
   {
@@ -40,17 +41,9 @@ describe('Posts Component', () => {
   let component: PostsComponent;
   let postService: any;
 
-  @Component({
-    selector: 'app-post',
-    template: '<div></div>',
-  })
-  class FakePostComponent {
-    @Input() post!: Post;
-  }
-
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PostsComponent, FakePostComponent],
+      declarations: [PostsComponent, PostComponent],
       providers: [
         {
           provide: PostService,
@@ -76,13 +69,33 @@ describe('Posts Component', () => {
       expect(component.posts.length).toBeGreaterThan(0);
     });
 
-    it('should render app-post for each post', () => {
+    it('should render app-post for each post (Detection using css selector)', () => {
       fixture.detectChanges();
       const debugElement = fixture.debugElement;
       let noOfCreatedElements = debugElement.queryAll(
         By.css('app-post')
       ).length;
       expect(noOfCreatedElements).toEqual(POSTS.length);
+    });
+
+    it('should render app-post for each post (Detection using directive)', () => {
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      let noOfCreatedElements = debugElement.queryAll(
+        By.directive(PostComponent)
+      ).length;
+      expect(noOfCreatedElements).toEqual(POSTS.length);
+    });
+
+    it('should pass the correct post to each post component', () => {
+      fixture.detectChanges();
+      const debugElement = fixture.debugElement;
+      let createdElements = debugElement.queryAll(By.directive(PostComponent));
+      for (let i in createdElements) {
+        expect(
+          (createdElements[i].componentInstance as PostComponent).post
+        ).toBe(POSTS[i]);
+      }
     });
   });
 
