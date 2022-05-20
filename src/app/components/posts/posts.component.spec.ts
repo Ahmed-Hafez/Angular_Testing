@@ -34,13 +34,14 @@ class mockPostService {
 }
 
 describe('Posts Component', () => {
+  let fixture: ComponentFixture<PostsComponent>;
   let component: PostsComponent;
   let postService: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      declarations: [PostsComponent],
       providers: [
-        PostsComponent,
         {
           provide: PostService,
           useClass: mockPostService,
@@ -48,7 +49,8 @@ describe('Posts Component', () => {
       ],
     });
 
-    component = TestBed.inject(PostsComponent);
+    fixture = TestBed.createComponent(PostsComponent);
+    component = fixture.componentInstance;
     postService = TestBed.inject(PostService);
   });
 
