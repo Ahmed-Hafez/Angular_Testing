@@ -4,10 +4,15 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class LoggerService {
+  messages: string[] = [];
 
   constructor() { }
 
   log(methodName: string): void {
-    console.log(methodName + ' method is called');
+    this.messages.push(methodName + ' is called');
+  }
+
+  clear(): void {
+    this.messages = [];
   }
 }
